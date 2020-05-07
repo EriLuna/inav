@@ -146,7 +146,12 @@
 #ifdef USE_HARDWARE_REVISION_DETECTION
 #include "hardware_revision.h"
 #endif
-
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+#include "Example/Example.h"
+#include "Example/rtwtypes.h"
+#endif
+/*ELL*/
 #ifdef USE_HARDWARE_PREBOOT_SETUP
 extern void initialisePreBootHardware(void);
 #endif
@@ -576,6 +581,7 @@ void init(void)
     uavInterconnectBusInit();
 #endif
 
+
 #ifdef USE_GPS
     if (feature(FEATURE_GPS)) {
         gpsInit();
@@ -691,4 +697,9 @@ void init(void)
 #endif
 
     systemState |= SYSTEM_STATE_READY;
+ /*ELL*/   
+#ifdef USE_SERIAL_TEST_MESSAGE
+    Example_initialize();
+#endif
+/*ELL*/
 }

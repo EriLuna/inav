@@ -208,3 +208,6 @@
 #define USE_DSHOT
 #define USE_ESC_SENSOR
 #define USE_SERIALSHOT
+/*ELL*/
+#define USE_SERIAL_TEST_MESSAGE
+/*ELL*/
