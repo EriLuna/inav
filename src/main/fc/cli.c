@@ -117,7 +117,12 @@ extern uint8_t __config_end;
 #include "telemetry/frsky_d.h"
 #include "telemetry/telemetry.h"
 #include "build/debug.h"
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+#include "Prueba2/Prueba2.h"
+#endif
 
+/*ELL*/
 #if FLASH_SIZE > 128
 #define PLAY_SOUND
 #endif
@@ -141,7 +146,11 @@ static void cliAssert(char *cmdline);
 static bool commandBatchActive = false;
 static bool commandBatchError = false;
 #endif
-
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+void rt_OneStep(void);
+#endif
+/*ELL*/
 // sync this with features_e
 static const char * const featureNames[] = {
     "THR_VBAT_COMP", "VBAT", "TX_PROF_SEL", "BAT_PROF_AUTOSWITCH", "MOTOR_STOP",
@@ -3604,3 +3613,48 @@ void cliInit(const serialConfig_t *serialConfig)
 {
     UNUSED(serialConfig);
 }
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+void NOINLINE taskSerialTestMessage(timeUs_t currentTimeUs){
+    UNUSED(currentTimeUs);
+    if (cliMode) {
+        Prueba2_U.Elevatorangle = -20;
+        Prueba2_U.Throttle = 0.9;
+        Prueba2_U.Vreel = 1;
+        rt_OneStep();
+        cliPrintf("The altitude is: %f\n", Prueba2_Y.Altitufe);
+        
+    }
+}
+void rt_OneStep(void)
+{
+  static boolean_T OverrunFlag = false;
+ 
+  /* Disable interrupts here */
+ 
+  /* Check for overrun */
+  if (OverrunFlag) {
+    rtmSetErrorStatus(Prueba2_M, "Overrun");
+    return;
+  }
+ 
+  OverrunFlag = true;
+ 
+  /* Save FPU context here (if necessary) */
+  /* Re-enable timer or interrupt here */
+  /* Set model inputs here */
+ 
+  /* Step the model */
+  Prueba2_step();
+ 
+  /* Get model outputs here */
+ 
+  /* Indicate task complete */
+  OverrunFlag = false;
+ 
+  /* Disable interrupts here */
+  /* Restore FPU context here (if necessary) */
+  /* Enable interrupts here */
+}
+#endif
+/*ELL*/

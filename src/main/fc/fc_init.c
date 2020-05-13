@@ -146,7 +146,12 @@
 #ifdef USE_HARDWARE_REVISION_DETECTION
 #include "hardware_revision.h"
 #endif
-
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+#include "Prueba2/Prueba2.h"
+#include "Prueba2/rtwtypes.h"
+#endif
+/*ELL*/
 #ifdef USE_HARDWARE_PREBOOT_SETUP
 extern void initialisePreBootHardware(void);
 #endif
@@ -689,6 +694,11 @@ void init(void)
         setTaskEnabled(TASK_RPM_FILTER, true);
     }
 #endif
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+    Prueba2_initialize();
+#endif
 
+/*ELL*/
     systemState |= SYSTEM_STATE_READY;
 }
