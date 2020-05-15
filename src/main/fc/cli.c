@@ -3618,7 +3618,7 @@ void cliInit(const serialConfig_t *serialConfig)
 void NOINLINE taskSerialTestMessage(timeUs_t currentTimeUs){
     UNUSED(currentTimeUs);
     if (cliMode) {
-        Prueba2_U.Elevatorangle = -20;
+        Prueba2_U.Elevatorangle = 20;
         Prueba2_U.Throttle = 0.9;
         Prueba2_U.Vreel = 1;
         rt_OneStep();
