@@ -117,7 +117,11 @@ extern uint8_t __config_end;
 #include "telemetry/frsky_d.h"
 #include "telemetry/telemetry.h"
 #include "build/debug.h"
-
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+#include "Controller/ControllerTest.h"
+#endif
+/*ELL*/
 #if FLASH_SIZE > 128
 #define PLAY_SOUND
 #endif
@@ -141,7 +145,11 @@ static void cliAssert(char *cmdline);
 static bool commandBatchActive = false;
 static bool commandBatchError = false;
 #endif
-
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+void rt_OneStep(void);
+#endif
+/*ELL*/
 // sync this with features_e
 static const char * const featureNames[] = {
     "THR_VBAT_COMP", "VBAT", "TX_PROF_SEL", "BAT_PROF_AUTOSWITCH", "MOTOR_STOP",
@@ -3604,3 +3612,59 @@ void cliInit(const serialConfig_t *serialConfig)
 {
     UNUSED(serialConfig);
 }
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+void NOINLINE taskSerialTestMessage(timeUs_t currentTimeUs){
+    UNUSED(currentTimeUs);
+    if (cliMode) {
+       static uint32_t contador=0;
+       ControllerTest_U.ThetaAngle = -0.35;
+       ControllerTest_U.AltitudeRef = 600;
+       ControllerTest_U.NegativeStep = 0;
+       rt_OneStep();
+        if (contador == 0){
+            cliPrintf("The Elevator command is: %f\n", ControllerTest_Y.Elev_cmd);
+        }
+          contador = contador + 1;
+        if (contador == 100){
+            cliPrintf("The Elevator command is: %f\n", ControllerTest_Y.Elev_cmd);
+            ControllerTest_U.NegativeStep=-50;
+        }
+        if (contador == 3100){
+           cliPrintf("The Elevator command is: %f\n", ControllerTest_Y.Elev_cmd); 
+        }
+        cliPrintf("Contaodr is: %d\n", contador);
+    }
+}
+void rt_OneStep(void)
+{
+  static boolean_T OverrunFlag = false;
+ 
+  /* Disable interrupts here */
+ 
+  /* Check for overrun */
+  if (OverrunFlag) {
+    rtmSetErrorStatus(ControllerTest_M, "Overrun");
+    return;
+  }
+ 
+  OverrunFlag = true;
+ 
+  /* Save FPU context here (if necessary) */
+  /* Re-enable timer or interrupt here */
+  /* Set model inputs here */
+ 
+  /* Step the model */
+  ControllerTest_step();
+ 
+  /* Get model outputs here */
+ 
+  /* Indicate task complete */
+  OverrunFlag = false;
+ 
+  /* Disable interrupts here */
+  /* Restore FPU context here (if necessary) */
+  /* Enable interrupts here */
+}
+#endif
+/*ELL*/

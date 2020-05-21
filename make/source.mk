@@ -71,6 +71,7 @@ COMMON_SRC = \
             drivers/temperature/lm75.c \
             drivers/pitotmeter_ms4525.c \
             fc/cli.c \
+            Controller/ControllerTest.c\
             fc/config.c \
             fc/controlrate_profile.c \
             fc/fc_core.c \

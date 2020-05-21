@@ -146,6 +146,12 @@
 #ifdef USE_HARDWARE_REVISION_DETECTION
 #include "hardware_revision.h"
 #endif
+/*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+#include "Controller/ControllerTest.h"
+#include "Controller/rtwtypes.h"
+#endif
+/*ELL*/
 
 #ifdef USE_HARDWARE_PREBOOT_SETUP
 extern void initialisePreBootHardware(void);
@@ -691,4 +697,10 @@ void init(void)
 #endif
 
     systemState |= SYSTEM_STATE_READY;
+ /*ELL*/
+#ifdef USE_SERIAL_TEST_MESSAGE
+    ControllerTest_initialize();
+#endif
+
+ /*ELL*/   
 }
