@@ -37,7 +37,7 @@ void rt_OneStep(void);
 void rt_OneStep(void)
 {
   static boolean_T OverrunFlag = false;
-
+   
   /* Disable interrupts here */
 
   /* Check for overrun */

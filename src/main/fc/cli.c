@@ -3617,29 +3617,34 @@ void cliInit(const serialConfig_t *serialConfig)
 void NOINLINE taskSerialTestMessage(timeUs_t currentTimeUs){
     UNUSED(currentTimeUs);
     if (cliMode) {
-       static uint32_t contador=0;
-       ControllerTest_U.ThetaAngle = -0.35;
-       ControllerTest_U.AltitudeRef = 600;
-       ControllerTest_U.NegativeStep = 0;
-       rt_OneStep();
-        if (contador == 0){
-            cliPrintf("The Elevator command is: %f\n", ControllerTest_Y.Elev_cmd);
-        }
-          contador = contador + 1;
-        if (contador == 100){
-            cliPrintf("The Elevator command is: %f\n", ControllerTest_Y.Elev_cmd);
-            ControllerTest_U.NegativeStep=-50;
-        }
-        if (contador == 3100){
-           cliPrintf("The Elevator command is: %f\n", ControllerTest_Y.Elev_cmd); 
-        }
-        cliPrintf("Contaodr is: %d\n", contador);
+     static uint32_t contador=0;
+     
+     if (contador >100){
+         ControllerTest_U.ThetaAngle = -0.35;
+         ControllerTest_U.AltitudeRef = 600;
+         ControllerTest_U.NegativeStep = -50;
+         rt_OneStep();
+         cliPrintf("The Elevator command is: %f\n", ControllerTest_Y.Elev_cmd);
+         cliPrintf("Contador is: %d\n", contador);
+         contador = contador +1; 
+     }
+     else{
+
+         ControllerTest_U.ThetaAngle = -0.35;
+         ControllerTest_U.AltitudeRef = 600;
+         ControllerTest_U.NegativeStep = 0;
+         rt_OneStep();
+         cliPrintf("The Elevator command is: %f\n", ControllerTest_Y.Elev_cmd);
+         cliPrintf("Contador is: %d\n", contador);
+         contador = contador +1; 
+     }
+    
     }
 }
 void rt_OneStep(void)
 {
   static boolean_T OverrunFlag = false;
- 
+
   /* Disable interrupts here */
  
   /* Check for overrun */
